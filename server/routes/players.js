@@ -3,15 +3,19 @@ const router = express.Router();
 const axios = require('axios');
 
 router.get('/', async (req, res) => {
+  const search = req.query.search || '';
+  console.log(`Incoming search: "${search}"`);
+  console.log(`Requesting: https://www.balldontlie.io/api/v1/players?search=${search}`);
+
   try {
-    const search = req.query.search || '';  // ✅ fallback to empty string if nothing provided
-    console.log('Search term:', search);    // 🪵 helps debug in Render logs
-
     const resp = await axios.get('https://www.balldontlie.io/api/v1/players', {
-      params: { search }
+      params: { search },
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'application/json'
+      }
     });
-
-    res.json(resp.data.data);  // ✅ send only the data array
+    res.json(resp.data.data);
   } catch (err) {
     console.error('Error fetching players:', err.message);
     res.status(500).json({ error: 'Failed to fetch players' });
