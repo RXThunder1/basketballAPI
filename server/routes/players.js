@@ -2,37 +2,31 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
-router.get('/', async (req, res) => {
+router.get('/search', async (req, res) => {
   const search = req.query.search || '';
-  console.log(`→ Searching players with term: "${search}"`);
-
-  const apiUrl = `https://www.balldontlie.io/api/v1/players?search=${encodeURIComponent(search)}`;
+  const url = `https://balldontlie.io/api/v1/players?search=${encodeURIComponent(search)}`;
+  console.log(`→ Proxying player search: "${search}" → ${url}`);
 
   try {
-    const resp = await axios.get(apiUrl, {
+    const response = await axios.get(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0'
       }
     });
 
-    console.log(`✅ API call succeeded with ${resp.data.data.length} results`);
-    res.json(resp.data.data);
-  } catch (err) {
-    console.error('❌ FULL ERROR (raw):', err);
-
-    if (err.response) {
-      console.error('❌ FULL ERROR (response):', {
-        status: err.response.status,
-        headers: err.response.headers,
-        data: err.response.data
-      });
-    }
+    console.log(`✅ Player data returned with ${response.data.data.length} results`);
+    res.json(response.data.data);
+  } catch (error) {
+    console.error('❌ Error while fetching players:', {
+      status: error.response?.status,
+      data: error.response?.data,
+    });
 
     res.status(500).json({
       error: 'Failed to fetch players',
-      detail: err.message,
-      ...(err.response?.data && { apiError: err.response.data })
+      detail: error.message,
+      apiError: error.response?.data || null
     });
   }
 });
