@@ -1,73 +1,74 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import './index.css';
+import { useState } from "react";
+import "./App.css";
 
 function App() {
-  const [query, setQuery] = useState('');
-  const [players, setPlayers] = useState([]);
-  const [teams, setTeams] = useState([]);
-  const [games, setGames] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchType, setSearchType] = useState("players");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const searchPlayers = async () => {
-    const res = await axios.get('/api/players', { params: { search: query } });
-    setPlayers(res.data);
-  };
-
-  const searchTeams = async () => {
-    const res = await axios.get('/api/teams');
-    setTeams(res.data);
-  };
-
-  const searchGames = async () => {
-    const res = await axios.get('/api/games', { params: { search: query } });
-    setGames(res.data);
+  const fetchData = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/${searchType}/search?search=${searchTerm}`);
+      if (!res.ok) throw new Error(`Failed to fetch ${searchType}`);
+      const data = await res.json();
+      if (!Array.isArray(data.data)) throw new Error("Unexpected API response");
+      setResults(data.data);
+    } catch (err) {
+      console.error(`Error fetching ${searchType}:`, err);
+      setError(`Could not fetch ${searchType}. Try again.`);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="App">
-      <h1>Basketball Stats Explorer</h1>
+    <div className="app">
+      <h1>🏀 Basketball Search</h1>
+      <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+        <option value="players">Search Players</option>
+        <option value="teams">Search Teams</option>
+        <option value="games">Search Games</option>
+      </select>
       <input
         type="text"
-        placeholder="Search players or games..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Enter search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <div>
-        <button onClick={searchPlayers}>Search Players</button>
-        <button onClick={searchTeams}>List Teams</button>
-        <button onClick={searchGames}>Search Games</button>
-      </div>
-      <div>
-        {players.length > 0 && (
-          <div>
-            <h2>Players</h2>
-            <ul>
-              {players.map(p => (
-                <li key={p.id}>{p.first_name} {p.last_name} ({p.team.full_name})</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {teams.length > 0 && (
-          <div>
-            <h2>Teams</h2>
-            <ul>
-              {teams.map(t => (
-                <li key={t.id}>{t.full_name}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {games.length > 0 && (
-          <div>
-            <h2>Games</h2>
-            <ul>
-              {games.map(g => (
-                <li key={g.id}>{g.home_team.full_name} vs {g.visitor_team.full_name} on {g.date}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <button onClick={fetchData}>Search</button>
+
+      {loading && <p>Loading...</p>}
+      {error && <p className="error">{error}</p>}
+
+      <div className="results">
+        {results.map((item) => {
+          if (searchType === "players") {
+            return (
+              <div key={item.id} className="card">
+                Player: {item.first_name} {item.last_name}
+              </div>
+            );
+          } else if (searchType === "teams") {
+            return (
+              <div key={item.id} className="card">
+                Team: {item.full_name}
+              </div>
+            );
+          } else if (searchType === "games") {
+            return (
+              <div key={item.id} className="card">
+                Game: {item.home_team.full_name} vs {item.visitor_team.full_name}<br />
+                Date: {new Date(item.date).toLocaleDateString()}
+              </div>
+            );
+          }
+          return null;
+        })}
       </div>
     </div>
   );
