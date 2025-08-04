@@ -1,33 +1,17 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-image: url("https://cdn.pixabay.com/photo/2014/08/11/21/39/basketball-416827_1280.jpg");
+  background-image: url("https://images.unsplash.com/photo-1600880292203-757bb62b4baf");
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: center;
   color: white;
 }
 
-.app {
+.container {
   text-align: center;
-  padding: 2rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  min-height: 100vh;
+  padding: 20px;
 }
 
-input, select {
-  padding: 0.5rem;
-  margin: 0.5rem;
-}
-
-.card {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 1rem;
-  margin: 1rem;
-  border-radius: 8px;
-  backdrop-filter: blur(5px);
-}
-
-.error {
-  color: red;
+.search-results {
+  margin-top: 20px;
 }

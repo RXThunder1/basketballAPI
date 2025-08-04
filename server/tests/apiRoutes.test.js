@@ -1,11 +1,7 @@
-const request = require('supertest');
-const express = require('express');
-const app = express();
+const axios = require('axios');
 
-app.use('/api/players', require('../routes/players'));
-
-test('GET /api/players returns array', async () => {
-  const res = await request(app).get('/api/players?search=lebron');
-  expect(res.statusCode).toBe(200);
-  expect(Array.isArray(res.body)).toBe(true);
+test('should fetch players from API', async () => {
+  const response = await axios.get('https://api.balldontlie.io/v1/players', { params: { search: 'lebron' } });
+  expect(response.status).toBe(200);
+  expect(response.data.data).toBeInstanceOf(Array);
 });

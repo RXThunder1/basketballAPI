@@ -1,13 +1,19 @@
-# Basketball Stats App
+# Basketball API Search App
 
-Full-stack app using React (Vite) + Express that queries BallDontLie API.
+A full-stack application using the BallDontLie API to search for:
+- Players
+- Teams
+- Games
 
-## Tech Used:
-- React + Vite
-- Express
-- Axios
-- Jest + Supertest
+### 🚀 Tech Stack
+- **Frontend:** React (Vite)
+- **Backend:** Node.js, Express
+- **Testing:** Jest
+- **Deployment:** Render
 
-## How to Run
-1️⃣ `cd server && npm install && npm start`  
-2️⃣ `cd client && npm install && npm run dev`
+### Features
+- Search players by name
+- Search NBA teams
+- Search games
+- Basketball-themed background
+- Live data from BallDontLie public API
