@@ -2,25 +2,25 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
-// Player Search Endpoint
+const API_KEY = process.env.BALLDONTLIE_API_KEY;
+
 router.get('/', async (req, res) => {
   try {
     const { search } = req.query;
+
+    if (!search || search.trim() === '') {
+      return res.json([]); // Return empty array if no search query
+    }
+
     const response = await axios.get('https://api.balldontlie.io/v1/players', {
       params: { search },
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer a2da85e3-69c6-4df9-af23-34631bc0fd23'
-      }
+      headers: { Authorization: `Bearer ${API_KEY}` }
     });
 
-    res.json(response.data.data || []);
+    res.json(response.data.data);
   } catch (error) {
-    console.error("Error fetching players:", error.response?.data || error.message);
-    res.status(error.response?.status || 500).json({
-      error: 'Failed to fetch players',
-      details: error.response?.data || error.message
-    });
+    console.error('Error fetching players:', error.message);
+    res.status(500).json({ error: 'Failed to fetch players' });
   }
 });
 
