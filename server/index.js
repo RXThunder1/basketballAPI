@@ -17,10 +17,16 @@ app.use('/players', playersRouter);
 app.use('/teams', teamsRouter);
 app.use('/games', gamesRouter);
 
-// Optional: a simple root route for health check or basic info
-app.get('/', (req, res) => {
-  res.send('Basketball API Proxy is running.');
+const path = require('path');
+
+// Serve the frontend build
+app.use(express.static(path.join(__dirname, 'client_dist', 'dist')));
+
+// Fallback: send index.html for any other route (so React Router works)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client_dist', 'dist', 'index.html'));
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
