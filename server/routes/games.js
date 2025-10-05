@@ -9,16 +9,13 @@ router.get('/', async (req, res) => {
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: process.env.BALLDONTLIE_API_KEY
+        Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`
       },
-      params: {
-        per_page: 100 // gets more results to filter from
-      }
+      params: { per_page: 100 }
     });
 
     let games = response.data.data;
 
-    // If search query is provided, filter by team names
     if (search) {
       games = games.filter(game =>
         game.home_team.full_name.toLowerCase().includes(search) ||
@@ -26,9 +23,9 @@ router.get('/', async (req, res) => {
       );
     }
 
-    res.json(games);
+    res.json({ data: games }); // Consistent structure
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching games:', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to fetch games' });
   }
 });

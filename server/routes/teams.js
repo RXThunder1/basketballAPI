@@ -9,22 +9,24 @@ router.get('/', async (req, res) => {
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: process.env.BALLDONTLIE_API_KEY
+        Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`
       }
     });
 
     let teams = response.data.data;
 
+    // Filter by search query if provided
     if (search) {
       teams = teams.filter(team =>
         team.full_name.toLowerCase().includes(search) ||
+        team.abbreviation.toLowerCase().includes(search) ||
         team.city.toLowerCase().includes(search)
       );
     }
 
-    res.json(teams);
+    res.json({ data: teams }); // consistent structure for frontend
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching teams:', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to fetch teams' });
   }
 });
