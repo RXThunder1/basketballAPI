@@ -1,24 +1,25 @@
 require('dotenv').config();
 const express = require('express');
-const path = require('path');
-const playersRouter = require('./routes/players');
-const teamsRouter = require('./routes/teams');
-const gamesRouter = require('./routes/games');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Serve static React build files
-app.use(express.static(path.join(__dirname, 'client_dist')));
+app.use(cors());
+app.use(express.json());
 
-// API routes
-app.use('/api/players', playersRouter);
-app.use('/api/teams', teamsRouter);
-app.use('/api/games', gamesRouter);
+// Import routes (make sure these files have the filtering logic as discussed)
+const playersRouter = require('./routes/players');
+const teamsRouter = require('./routes/teams');
+const gamesRouter = require('./routes/games');
 
-// Catch-all to serve React app for any unknown routes (for client side routing)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client_dist', 'index.html'));
+app.use('/players', playersRouter);
+app.use('/teams', teamsRouter);
+app.use('/games', gamesRouter);
+
+// Optional: a simple root route for health check or basic info
+app.get('/', (req, res) => {
+  res.send('Basketball API Proxy is running.');
 });
 
 app.listen(PORT, () => {

@@ -1,31 +1,30 @@
 const express = require('express');
-const router = express.Router();
 const axios = require('axios');
-
-const API_KEY = process.env.BALLDONTLIE_API_KEY;
+const router = express.Router();
 
 router.get('/', async (req, res) => {
-  try {
-    const { search } = req.query;
+  const search = req.query.search?.toLowerCase();
+  const url = 'https://api.balldontlie.io/v1/teams';
 
-    // The teams endpoint does not support search parameter, so do manual filtering after fetch
-    const response = await axios.get('https://api.balldontlie.io/v1/teams', {
-      headers: { Authorization: `Bearer ${API_KEY}` }
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: process.env.BALLDONTLIE_API_KEY
+      }
     });
 
     let teams = response.data.data;
 
-    if (search && search.trim() !== '') {
-      const searchLower = search.toLowerCase();
-      teams = teams.filter(team => 
-        team.full_name.toLowerCase().includes(searchLower) || 
-        team.abbreviation.toLowerCase().includes(searchLower)
+    if (search) {
+      teams = teams.filter(team =>
+        team.full_name.toLowerCase().includes(search) ||
+        team.city.toLowerCase().includes(search)
       );
     }
 
     res.json(teams);
-  } catch (error) {
-    console.error('Error fetching teams:', error.message);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch teams' });
   }
 });
