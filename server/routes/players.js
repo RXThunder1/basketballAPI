@@ -12,23 +12,23 @@ router.get('/', async (req, res) => {
         Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`
       },
       params: {
-        per_page: 100 // get a large enough sample to filter locally
+        per_page: 100
       }
     });
 
     let players = response.data.data;
 
-    // Filter by search query if provided
     if (search) {
-      players = players.filter(player =>
-        `${player.first_name} ${player.last_name}`.toLowerCase().includes(search) ||
-        player.team.full_name.toLowerCase().includes(search)
+      players = players.filter(
+        player =>
+          player.first_name.toLowerCase().includes(search) ||
+          player.last_name.toLowerCase().includes(search)
       );
     }
 
-    res.json({ data: players });
+    res.json(players);
   } catch (err) {
-    console.error('Error fetching players:', err.response?.data || err.message);
+    console.error('Error fetching players:', err);
     res.status(500).json({ error: 'Failed to fetch players' });
   }
 });

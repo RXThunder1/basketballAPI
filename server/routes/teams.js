@@ -15,18 +15,13 @@ router.get('/', async (req, res) => {
 
     let teams = response.data.data;
 
-    // Filter by search query if provided
     if (search) {
-      teams = teams.filter(team =>
-        team.full_name.toLowerCase().includes(search) ||
-        team.abbreviation.toLowerCase().includes(search) ||
-        team.city.toLowerCase().includes(search)
-      );
+      teams = teams.filter(team => team.full_name.toLowerCase().includes(search));
     }
 
-    res.json({ data: teams }); // consistent structure for frontend
+    res.json(teams);
   } catch (err) {
-    console.error('Error fetching teams:', err.response?.data || err.message);
+    console.error('Error fetching teams:', err);
     res.status(500).json({ error: 'Failed to fetch teams' });
   }
 });

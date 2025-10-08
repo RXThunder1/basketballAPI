@@ -11,21 +11,24 @@ router.get('/', async (req, res) => {
       headers: {
         Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`
       },
-      params: { per_page: 100 }
+      params: {
+        per_page: 100
+      }
     });
 
     let games = response.data.data;
 
     if (search) {
-      games = games.filter(game =>
-        game.home_team.full_name.toLowerCase().includes(search) ||
-        game.visitor_team.full_name.toLowerCase().includes(search)
+      games = games.filter(
+        game =>
+          game.home_team.full_name.toLowerCase().includes(search) ||
+          game.visitor_team.full_name.toLowerCase().includes(search)
       );
     }
 
-    res.json({ data: games }); // Consistent structure
+    res.json(games);
   } catch (err) {
-    console.error('Error fetching games:', err.response?.data || err.message);
+    console.error('Error fetching games:', err);
     res.status(500).json({ error: 'Failed to fetch games' });
   }
 });

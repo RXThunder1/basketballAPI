@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Import routes
+// Import API routes
 const teamsRoute = require('./routes/teams');
 const playersRoute = require('./routes/players');
 const gamesRoute = require('./routes/games');
@@ -16,16 +16,16 @@ app.use('/api/teams', teamsRoute);
 app.use('/api/players', playersRoute);
 app.use('/api/games', gamesRoute);
 
-// Serve frontend (React build)
-const clientDistPath = path.join(__dirname, 'client_dist', 'dist');
+// Serve frontend build
+const clientDistPath = path.join(__dirname, 'client_dist'); // points directly to client_dist folder
 app.use(express.static(clientDistPath));
 
-// Fallback: always send React index.html for unknown routes
+// Fallback: React app for unknown routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
-// Port config
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
