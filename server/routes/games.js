@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   try {
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${process.env.BALLDONTLIE_API_KEY}`
+        Authorization: process.env.BALLDONTLIE_API_KEY
       },
       params: {
         per_page: 100
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
       );
     }
 
-    res.json(games);
+    res.json(games || []);
   } catch (err) {
     console.error('Error fetching games:', err);
     res.status(500).json({ error: 'Failed to fetch games' });

@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
       teams = teams.filter(team => team.full_name.toLowerCase().includes(search));
     }
 
-    res.json(teams);
+    res.json(teams || []);
   } catch (err) {
     console.error('Error fetching teams:', err);
     res.status(500).json({ error: 'Failed to fetch teams' });
