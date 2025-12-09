@@ -31,23 +31,31 @@ export default function App() {
       <div className="search-results">
 
         {results.length > 0 ? (
-          <>
-            {searchType === "games" ? (
-              <GamesTable games={results} />
-            ) : (
-              <ul>
-                {results.map((item, index) => (
-                  <li key={index}>
-                    {searchType === "players" && `${item.first_name} ${item.last_name} - ${item.team?.full_name}`}
-                    {searchType === "teams" && `${item.full_name} (${item.abbreviation})`}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        ) : (
-          <p>No results found</p>
-        )}
+  <>
+    {searchType === "games" ? (
+      <GamesTable games={results} />
+    ) : searchType === "players" ? (
+      <ul>
+        {results.map((item, index) => (
+          <li key={index}>
+            {item.first_name} {item.last_name} - {item.team?.full_name}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul>
+        {results.map((item, index) => (
+          <li key={index}>
+            {item.full_name} ({item.abbreviation})
+          </li>
+        ))}
+      </ul>
+    )}
+  </>
+) : (
+  <p>No results found</p>
+)}
+
 
       </div>
     </div>
