@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
+import GamesTable from './components/GamesTable';
 import axios from 'axios';
 
 export default function App() {
@@ -11,6 +12,7 @@ export default function App() {
       const response = await axios.get(`/api/${type}`, {
         params: { search: query }
       });
+
       setSearchType(type);
       setResults(response.data);
     } catch (error) {
@@ -22,21 +24,31 @@ export default function App() {
   return (
     <div className="container">
       <h1>Basketball API Search</h1>
+
+      {/* search bar (passes the type & query back up) */}
       <SearchBar onSearch={handleSearch} />
+
       <div className="search-results">
+
         {results.length > 0 ? (
-          <ul>
-            {results.map((item, index) => (
-              <li key={index}>
-                {searchType === "players" && `${item.first_name} ${item.last_name} - ${item.team?.full_name}`}
-                {searchType === "teams" && `${item.full_name} (${item.abbreviation})`}
-                {searchType === "games" && `${item.home_team.full_name} vs ${item.visitor_team.full_name} | Score: ${item.home_team_score}-${item.visitor_team_score}`}
-              </li>
-            ))}
-          </ul>
+          <>
+            {searchType === "games" ? (
+              <GamesTable games={results} />
+            ) : (
+              <ul>
+                {results.map((item, index) => (
+                  <li key={index}>
+                    {searchType === "players" && `${item.first_name} ${item.last_name} - ${item.team?.full_name}`}
+                    {searchType === "teams" && `${item.full_name} (${item.abbreviation})`}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         ) : (
           <p>No results found</p>
         )}
+
       </div>
     </div>
   );
