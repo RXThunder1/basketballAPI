@@ -1,19 +1,4 @@
-body {
-  background-image: url("https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1500&q=80");
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
-  background-attachment: fixed !important;
-  background-position: center !important;
-}
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  pointer-events: none;
-  z-index: -1;
-}
 
 
 .container {
