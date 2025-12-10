@@ -1,7 +1,11 @@
+// App.jsx
 import React, { useState } from 'react';
+import './index.css';           // general styles, keep at top
+import './background.css';      // new background CSS, after index.css so it overrides body styles
 import SearchBar from './components/SearchBar';
 import GamesTable from './components/GamesTable';
 import axios from 'axios';
+
 
 export default function App() {
   const [results, setResults] = useState([]);
