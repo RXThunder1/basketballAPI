@@ -1,6 +1,6 @@
-import './background.css';
 import React, { useState } from 'react';
 import './index.css';           // general styles, keep at top
+import './background.css';
 import SearchBar from './components/SearchBar';
 import GamesTable from './components/GamesTable';
 import axios from 'axios';
